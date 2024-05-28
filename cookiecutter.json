@@ -1,0 +1,10 @@
+{
+	"package_title": "Generic Fastapi Template",
+	"default_port": "8989",
+	"author_email": "author@email.com",
+	"github_repo_slug": "{{ cookiecutter.package_title.lower().replace(' ', '-').replace('_', '-') }}",
+	"github_repo_owner": "MyGithubUsername",
+	"docker_username": "MyDockerUsername",
+	"package_description": "Generic fastapi template",
+	"package_slug": "{{ cookiecutter.package_title.lower().replace(' ', '_').replace('-', '_') }}"
+}

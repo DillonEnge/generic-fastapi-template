@@ -1,0 +1,7 @@
+[flake8]
+# W503: Whitespace before ':' (conflicts with black formatting)
+ignore = E711,W503
+select = BLK,E,F,I,W
+max-line-length = 100
+application-import-names = data_api,tests
+exclude = bin/,.github/,build/,.venv/

@@ -1,0 +1,54 @@
+#
+# dependencies.yaml
+#
+# Compose file defining external services which Data API depends
+# on for a full local development environment.
+#
+# This is spun up via the 'dev' Make target.
+#
+
+version: '3.6'
+services:
+  {{cookiecutter.github_repo_slug}}:
+    image: {{cookiecutter.docker_username}}/{{cookiecutter.github_repo_slug}}
+    container_name: {{cookiecutter.package_slug}}
+    build: ..
+    entrypoint: ["uvicorn", "{{cookiecutter.package_slug}}.main:app", "--host", "0.0.0.0", "--port", "{{cookiecutter.default_port}}", "--reload"]
+    env_file:
+      - config.env
+    ports:
+      - "{{cookiecutter.default_port}}:{{cookiecutter.default_port}}"
+    volumes:
+      - ..:/app
+    links:
+      - pgadmin
+      - postgres
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      DATABASE_HOST: '127.0.0.1'
+      POSTGRES_USER: 'root'
+      POSTGRES_PASSWORD: 'root'
+      POSTGRES_DB: 'root'
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./config/pg-init.d:/docker-entrypoint-initdb.d/
+
+  pgadmin:
+    # Run as root so mounted volume below can be accessed at startup
+    user: root
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: '{{cookiecutter.author_email}}'
+      PGADMIN_DEFAULT_PASSWORD: 'admin'
+    ports:
+      - '16543:80'
+    volumes:
+      - ./schemas:/var/lib/pgadmin/storage/{{cookiecutter.author_email.replace('@', '_')}}/
+    links:
+      - postgres
